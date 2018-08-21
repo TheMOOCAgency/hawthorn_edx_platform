@@ -14,7 +14,7 @@ USER_TASKS_ARTIFACT_STORAGE = COURSE_IMPORT_EXPORT_STORAGE
 DEBUG = True
 USE_I18N = True
 DEFAULT_TEMPLATE_ENGINE['OPTIONS']['debug'] = DEBUG
-SITE_NAME = 'localhost:8001'
+SITE_NAME = 'localhost:18000'
 HTTPS = 'off'
 
 ################################ LOGGERS ######################################
@@ -33,7 +33,7 @@ EMAIL_FILE_PATH = '/edx/src/ace_messages/'
 
 ################################# LMS INTEGRATION #############################
 
-LMS_BASE = "localhost:8000"
+LMS_BASE = "localhost:18000"
 LMS_ROOT_URL = "http://{}".format(LMS_BASE)
 FEATURES['PREVIEW_LMS_BASE'] = "preview." + LMS_BASE
 

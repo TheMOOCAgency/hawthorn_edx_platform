@@ -86,6 +86,7 @@ class certificate():
 
         return context
 
+    #GENERATE STUDENT CERTIFICATE
     def view(self,request):
         grades = self.check_certificate()
 	try:
@@ -97,10 +98,10 @@ class certificate():
         except:
 	    last_name = ""
         name = last_name+" "+first_name
-        if self.metadata.get('bg'):
-            bg =self.metadata.get('bg')
+        if request.GET['bg_img']:
+            bg =settings.LMS_ROOT_URL+request.GET['bg_img'].replace(' ','+')
         else :
-            bg =settings.LMS_ROOT_URL+"/media/certificates/certificate_bg.jpg"
+            bg=settings.LMS_ROOT_URL+"/media/certificates/certificate_bg.jpg"
         context = {
             "request":request,
             "grades":grades,
@@ -111,6 +112,32 @@ class certificate():
             "first_name":first_name,
             "last_name":last_name,
             "hash":hashlib.sha256(name.strip()+"AyuNUNag62wFrApuqErafE"+str(grades.get('grade')*100)).hexdigest()[0:9]
+        }
+
+        return render_to_response('tma_apps/certificate.html',context)
+
+    #GENERATE GENERIC CERTIFICATE
+    def generic(self,request):
+        self.get_course()
+        self.get_metadata()
+        if request.GET['bg_img']:
+            bg =settings.LMS_ROOT_URL+request.GET['bg_img'].replace(' ','+')
+        else :
+            bg=settings.LMS_ROOT_URL+"/media/certificates/certificate_bg.jpg"
+        grades={
+        "passed":True,
+        "grade":0.98,
+        }
+        context = {
+            "request":request,
+            "grades":grades,
+            "course_name":self.course.display_name_with_default,
+            "signature":self.metadata.get('signature'),
+            "pdf":self.metadata.get('pdf'),
+            "bg":bg,
+            "first_name":"John",
+            "last_name":"Doe",
+            "hash":hashlib.sha256("John".strip()+"AyuNUNag62wFrApuqErafE"+str(grades.get('grade')*100)).hexdigest()[0:9]
         }
 
         return render_to_response('tma_apps/certificate.html',context)

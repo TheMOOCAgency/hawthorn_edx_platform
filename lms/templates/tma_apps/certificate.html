@@ -19,7 +19,7 @@ import json
   }
   #certificate{
     background-image: url('${bg}');
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     width:auto;
@@ -30,8 +30,8 @@ import json
   }
   .container{
     margin-top:100px;
-    width:1125px;
-    height:700px;
+    width:1100px;
+    height:750px;
     margin-left: auto;
     margin-right: auto;
     padding: 0;
@@ -52,33 +52,40 @@ import json
     font-size: 20px;
   }
   h2{
-    font-size:35px;
+    font-size:30px;
     color: black;
   }
   h4{
     font-size: 16px;
+  }
+  #content_wrapper{
+    background-color: rgba(255,255,255,0.6);
+    padding: 50px;
+    min-height: 400px;
   }
 </style>
 
 % if grades.get('passed'):
 <div class="container">
   <div id="certificate">
-    <div class="intro">
-      <h3>Attestation de suivi et de réussite</h3>
-    </div>
-    <div class="main-text">
-      % if last_name and first_name:
-        <h1>${last_name} ${first_name}</h1>
-      %else :
-        <h1>${user.username}</h1>
-      %endif
-      <h4>a suivi et réussi le MOOC</h4>
-      <h2>${course_name}</h2>
-      <h4>avec un score de</h4>
-      <h2>${grades.get('grade')*100}%</h2>
-    </div>
-    <div class="verification">
-      <p>Code de vérification : ${hash} – A vérifier sur <a id="check_link" target="_blank" href="https://services.themoocagency.com/check?MOOC=${course_name}">https://services.themoocagency.com/check</a></p>
+    <div id="content_wrapper">
+      <div class="intro">
+        <h3>Attestation de suivi et de réussite</h3>
+      </div>
+      <div class="main-text">
+        % if last_name and first_name:
+          <h1>${last_name} ${first_name}</h1>
+        %else :
+          <h1>${user.username}</h1>
+        %endif
+        <h4>a suivi et réussi le MOOC</h4>
+        <h2>${course_name}</h2>
+        <h4>avec un score de</h4>
+        <h2>${grades.get('grade')*100}%</h2>
+      </div>
+      <div class="verification">
+        <p>Code de vérification : ${hash} sur <a id="check_link" target="_blank" href="https://services.themoocagency.com/check?MOOC=${course_name}">https://services.themoocagency.com/check</a></p>
+      </div>
     </div>
   </div>
 </div>
@@ -106,7 +113,7 @@ function printpage(){
     onrendered : function (canvas){
      var img=canvas.toDataURL("image/png");
      var doc = new jsPDF({orientation: 'landscape'});
-     doc.addImage(img, "PNG", 0, 10);
+     doc.addImage(img, "PNG", 5, 5);
      doc.save("certificat.pdf");
     }
   })

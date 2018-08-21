@@ -17,3 +17,10 @@ def render(request,course_id):
 
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     return certificate(course_key,request.user).view(request)
+
+@login_required
+@require_GET
+def generic(request,course_id):
+
+    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+    return certificate(course_key,request.user).generic(request)
