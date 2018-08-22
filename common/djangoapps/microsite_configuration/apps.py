@@ -1,7 +1,7 @@
 
 import logging
 from django.apps import AppConfig
-from .microsite import enable_microsites
+#from .microsite import enable_microsites
 
 log = logging.getLogger(__name__)
 
@@ -12,4 +12,5 @@ class MicrositeConfigurationConfig(AppConfig):
 
     def ready(self):
         # Mako requires the directories to be added after the django setup.
+        from .microsite import enable_microsites
         enable_microsites(log)

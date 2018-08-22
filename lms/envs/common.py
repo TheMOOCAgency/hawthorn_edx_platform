@@ -2012,7 +2012,6 @@ YOUTUBE = {
 YOUTUBE_API_KEY = None
 
 ################################### APPS ######################################
-
 # The order of INSTALLED_APPS is important, when adding new apps here
 # remember to check that you are not creating new
 # RemovedInDjango19Warnings in the test logs.
@@ -2180,6 +2179,7 @@ INSTALLED_APPS = [
 
     # Microsite configuration
     'microsite_configuration.apps.MicrositeConfigurationConfig',
+    # MODIF HERE
 
     # RSS Proxy
     'rss_proxy',
@@ -3190,11 +3190,15 @@ JWT_AUTH = {
 # for MICROSITE_BACKEND possible choices are
 # 1. microsite_configuration.backends.filebased.FilebasedMicrositeBackend
 # 2. microsite_configuration.backends.database.DatabaseMicrositeBackend
-MICROSITE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeBackend'
+# MODIF HERE
+#MICROSITE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeBackend'
+MICROSITE_BACKEND = 'microsite_configuration.backends.database.DatabaseMicrositeBackend'
 # for MICROSITE_TEMPLATE_BACKEND possible choices are
 # 1. microsite_configuration.backends.filebased.FilebasedMicrositeTemplateBackend
 # 2. microsite_configuration.backends.database.DatabaseMicrositeTemplateBackend
-MICROSITE_TEMPLATE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeTemplateBackend'
+#MICROSITE_TEMPLATE_BACKEND = 'microsite_configuration.backends.filebased.FilebasedMicrositeTemplateBackend'
+MICROSITE_TEMPLATE_BACKEND = 'microsite_configuration.backends.database.DatabaseMicrositeTemplateBackend'
+
 # TTL for microsite database template cache
 MICROSITE_DATABASE_TEMPLATE_CACHE_TTL = 5 * 60
 

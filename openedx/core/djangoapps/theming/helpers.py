@@ -10,7 +10,7 @@ from logging import getLogger
 
 from django.conf import settings
 
-from microsite_configuration import microsite
+#from microsite_configuration import microsite
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.theming.helpers_dirs import (
     Theme,
@@ -34,6 +34,7 @@ def get_template_path(relative_path, **kwargs):
     # We need to give priority to theming over microsites
     # So, we apply microsite override only if there is no associated site theme
     # and associated microsite is present.
+    from microsite_configuration import microsite
     if not current_request_has_associated_site_theme() and microsite.is_request_in_microsite():
         relative_path = microsite.get_template_path(relative_path, **kwargs)
     return relative_path
@@ -44,6 +45,7 @@ def is_request_in_themed_site():
     This is a proxy function to hide microsite_configuration behind comprehensive theming.
     """
     # We need to give priority to theming/site-configuration over microsites
+    from microsite_configuration import microsite
     return configuration_helpers.is_site_configuration_enabled() or microsite.is_request_in_microsite()
 
 
@@ -55,6 +57,7 @@ def get_template(uri):
     # We need to give priority to theming over microsites
     # So, we apply microsite template override only when there is no associated theme,
     if not current_request_has_associated_site_theme():
+        from microsite_configuration import microsite
         return microsite.get_template(uri)
 
 
@@ -337,6 +340,7 @@ def is_comprehensive_theming_enabled():
 
     # Disable theming for microsites
     # Microsite configurations take priority over the default site theme.
+    from microsite_configuration import microsite
     if microsite.is_request_in_microsite():
         return False
 

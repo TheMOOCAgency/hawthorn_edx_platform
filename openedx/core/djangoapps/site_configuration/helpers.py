@@ -3,7 +3,7 @@ Helpers methods for site configuration.
 """
 from django.conf import settings
 
-from microsite_configuration import microsite
+#from microsite_configuration import microsite
 
 
 def get_current_site_configuration():
@@ -112,6 +112,8 @@ def get_value(val_name, default=None, **kwargs):
         configuration_value = get_configuration_value(val_name, default=default)
     else:
         # Retrieve the requested field/value from the microsite configuration
+        # MODIF HERE
+        from microsite_configuration import microsite
         configuration_value = microsite.get_value(val_name, default=default, **kwargs)
 
     # Attempt to perform a dictionary update using the provided default
@@ -148,6 +150,7 @@ def get_dict(name, default=None):
     if is_site_configuration_enabled():
         return get_configuration_dict(name, default)
     else:
+        from microsite_configuration import microsite
         return microsite.get_dict(name, default)
 
 
@@ -165,6 +168,7 @@ def has_override_value(name):
     if is_site_configuration_enabled():
         return has_configuration_override(name)
     else:
+        from microsite_configuration import microsite
         return microsite.has_override_value(name)
 
 
@@ -189,6 +193,7 @@ def get_value_for_org(org, val_name, default=None):
     if SiteConfiguration.has_org(org):
         return SiteConfiguration.get_value_for_org(org, val_name, default)
     else:
+        from microsite_configuration import microsite
         return microsite.get_value_for_org(org, val_name, default)
 
 
@@ -218,6 +223,7 @@ def get_all_orgs():
     # Import is placed here to avoid model import at project startup.
     from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
     site_configuration_orgs = SiteConfiguration.get_all_orgs()
+    from microsite_configuration import microsite
     microsite_orgs = microsite.get_all_orgs()
 
     return site_configuration_orgs.union(microsite_orgs)

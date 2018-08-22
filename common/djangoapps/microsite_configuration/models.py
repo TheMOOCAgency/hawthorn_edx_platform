@@ -7,7 +7,7 @@ that would have been used in the settings.
 """
 import collections
 
-from django.contrib.sites.models import Site
+#from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models.base import ObjectDoesNotExist
 from django.db.models.signals import pre_delete, pre_save
@@ -29,6 +29,7 @@ class Microsite(models.Model):
         - The values field must be validated on save to prevent the platform from crashing
         badly in the case the string is not able to be loaded as json.
     """
+    from django.contrib.sites.models import Site
     site = models.OneToOneField(Site, related_name='microsite', on_delete=models.CASCADE)
     key = models.CharField(max_length=63, db_index=True, unique=True)
     values = JSONField(null=False, blank=True, load_kwargs={'object_pairs_hook': collections.OrderedDict})
@@ -61,6 +62,7 @@ class MicrositeHistory(TimeStampedModel):
     This is an archive table for Microsites model, so that we can maintain a history of changes. Note that the
     key field is no longer unique
     """
+    from django.contrib.sites.models import Site
     site = models.ForeignKey(Site, related_name='microsite_history', on_delete=models.CASCADE)
     key = models.CharField(max_length=63, db_index=True)
     values = JSONField(null=False, blank=True, load_kwargs={'object_pairs_hook': collections.OrderedDict})
