@@ -593,7 +593,7 @@ def process_survey_link(survey_link, user):
     return survey_link.format(UNIQUE_ID=unique_id_for_user(user))
 
 
-def do_create_account(form, custom_form=None):
+def do_create_account(form, prefix, custom_form=None, custom_field_data=None):
     """
     Given cleaned post variables, create the User and UserProfile objects, as well as the
     registration for this user.
@@ -666,10 +666,28 @@ def do_create_account(form, custom_form=None):
         "name", "level_of_education", "gender", "mailing_address", "city", "country", "goals",
         "year_of_birth"
     ]
+
+    # ADD TMA MICROSITE CUSTOM FIELDS
+    q = {}
+    microsite_form_status = True
+    try:
+        for n in settings.MICROSITE_CONFIGURATION[prefix[0]]['FORM_EXTRA']:
+            q[n.get('name')] = custom_field_data[n.get('name')]
+        q['microsite'] = prefix[0]
+    except:
+        microsite_form_status = False
+    # END ADD TMA MICROSITE CUSTOM FIELDS
+
     profile = UserProfile(
         user=user,
         **{key: form.cleaned_data.get(key) for key in profile_fields}
     )
+
+    # ADD MICROSITE CUSTOM FIELDS
+    if microsite_form_status:
+        profile.custom_field = json.dumps(q)
+    # END ADD MICROSITE CUSTOM FIELDS
+
     extended_profile = form.cleaned_extended_profile
     if extended_profile:
         profile.meta = json.dumps(extended_profile)

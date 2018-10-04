@@ -606,6 +606,20 @@ def create_account_with_params(request, params):
         'REGISTRATION_EXTRA_FIELDS',
         getattr(settings, 'REGISTRATION_EXTRA_FIELDS', {})
     )
+
+    # TMA FORM EXTRA REGISTRATION FIELDS
+    custom_field_data = {}
+    domain = request.META['HTTP_HOST']
+    prefix = domain.split('.')
+    log.info(prefix)
+    try:
+        # To be replaced by configuration_helpers when microsites are backend
+        for n in settings.MICROSITE_CONFIGURATION[prefix[0]]['FORM_EXTRA']:
+            custom_field_data[n.get('name')] = request.POST.get(n.get('name'))
+    except:
+        custom_field_data = {}
+    # END TMA FORM EXTRA
+
     # registration via third party (Google, Facebook) using mobile application
     # doesn't use social auth pipeline (no redirect uri(s) etc involved).
     # In this case all related info (required for account linking)
@@ -676,7 +690,7 @@ def create_account_with_params(request, params):
     # Perform operations within a transaction that are critical to account creation
     with outer_atomic(read_committed=True):
         # first, create the account
-        (user, profile, registration) = do_create_account(form, custom_form)
+        (user, profile, registration) = do_create_account(form, prefix, custom_form, custom_field_data)
 
         # If a 3rd party auth provider and credentials were provided in the API, link the account with social auth
         # (If the user is using the normal register page, the social auth pipeline does the linking, not this code)
@@ -946,6 +960,26 @@ def create_account(request, post_override=None):
         return HttpResponseForbidden(SYSTEM_MAINTENANCE_MSG)
 
     warnings.warn("Please use RegistrationView instead.", DeprecationWarning)
+
+    # TMA CHECK FORM EXTRA
+    domain = request.META['HTTP_HOST']
+    prefix = domain.split('.')
+    # To be replaced by configuration_helpers when microsites are backend
+    extrafield = settings.MICROSITE_CONFIGURATION[prefix[0]]['FORM_EXTRA']
+    if extrafield is not None:
+        for n in extrafield:
+            field = request.POST.get(n.get('name'))
+            required = n.get('required')
+            if required and field == '':
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "field": n.get('name'),
+                        "value": n.get('errorMessages'),
+                    },
+                    status=400
+                )
+    # END TMA CHECK
 
     try:
         user = create_account_with_params(request, post_override or request.POST)

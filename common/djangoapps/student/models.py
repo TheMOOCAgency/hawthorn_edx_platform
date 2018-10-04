@@ -413,6 +413,9 @@ class UserProfile(models.Model):
     language = models.CharField(blank=True, max_length=255, db_index=True)
     location = models.CharField(blank=True, max_length=255, db_index=True)
 
+    # Custom_field TMA microsites
+    custom_field = models.TextField(default=False)
+
     # Optional demographic data we started capturing from Fall 2012
     this_year = datetime.now(UTC).year
     VALID_YEARS = range(this_year, this_year - 120, -1)
